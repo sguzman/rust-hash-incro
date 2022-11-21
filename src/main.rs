@@ -25,6 +25,12 @@ fn incr_hash(n: usize, data: Vec<u8>) -> Vec<String> {
         .collect::<Vec<String>>()
 }
 
+fn sorted_hashes(hashes: Vec<String>) -> Vec<String> {
+    let mut hashes = hashes.clone();
+    hashes.par_sort();
+    hashes
+}
+
 fn main() {
     println!("hi :)");
     let arg = get_arg();
@@ -32,21 +38,10 @@ fn main() {
     println!("Loading file: {}", arg);
     println!("File content length: {}", contents.len());
 
-    // Compute hash of first bytes using rayon
     let hashes = incr_hash(100, contents);
+    let hashes = sorted_hashes(hashes);
 
-    // Loop through hashes and print them
-    for hash in &hashes {
-        println!("\t{}", hash);
-    }
-
-    // Sort hashes and print them
-    let sorted_hashes = {
-        let mut hashes = hashes;
-        hashes.par_sort();
-        hashes
-    };
-    for hash in sorted_hashes {
+    for hash in hashes {
         println!("Sorted \t{}", hash);
     }
 
